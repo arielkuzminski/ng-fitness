@@ -32,6 +32,7 @@
       <mat-datepicker #birthPicker></mat-datepicker>
     </mat-form-field>
     <mat-checkbox ngModel name="agree" required>Agree to Terms and Conditions.</mat-checkbox>
-    <button type="submit" mat-raised-button color="primary" [disabled]="f.invalid">Submit</button>
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+    <button *ngIf="!isLoading" type="submit" mat-raised-button color="primary" [disabled]="f.invalid">Submit</button>
   </form>
 </section>
