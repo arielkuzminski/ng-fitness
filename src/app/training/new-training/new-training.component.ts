@@ -18,16 +18,24 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
   isLoading = false;
   private loadingSub: Subscription;
 
-  constructor(private trainingService: TrainingService, private uiService: UIService) { }
+  constructor(
+    private trainingService: TrainingService,
+    private uiService: UIService
+  ) {}
 
   ngOnInit() {
-    this.exerciseSubscription = this.trainingService.exercisesChanged
-      .subscribe(exercises => (this.exercises = exercises)
+    this.fetchExercises();
+  }
+
+  fetchExercises() {
+    this.exerciseSubscription = this.trainingService.exercisesChanged.subscribe(
+      exercises => (this.exercises = exercises)
     );
-    this.loadingSub = this.uiService.loadingStateChanged
-      .subscribe(isLoading => {
+    this.loadingSub = this.uiService.loadingStateChanged.subscribe(
+      isLoading => {
         this.isLoading = isLoading;
-      });
+      }
+    );
     this.trainingService.fetchAvailableExercises();
   }
 
@@ -39,5 +47,4 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
     this.exerciseSubscription.unsubscribe();
     this.loadingSub.unsubscribe();
   }
-
 }
