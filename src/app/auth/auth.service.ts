@@ -16,6 +16,7 @@ import * as Auth from '../auth/auth.actions';
 @Injectable()
 export class AuthService {
   private isAuthenticated = false;
+  private uid;
 
   constructor(
     private router: Router,
@@ -31,9 +32,14 @@ export class AuthService {
       if (user) {
         this.isAuthenticated = true;
         this.store.dispatch(new Auth.SetAuthenticated());
+        // this.trainingService.setUID(user.uid);
+        this.store.dispatch(new Auth.SetCurrentUserID(user.uid));
         this.router.navigate(['/training']);
       } else {
         this.trainingService.cancelSubscriptions();
+        // this.trainingService.setUID('');
+        this.store.dispatch(new Auth.SetCurrentUserID(null));
+        this.uid = '';
         this.store.dispatch(new Auth.SetUnauthenticated());
         this.router.navigate(['/login']);
         this.isAuthenticated = false;

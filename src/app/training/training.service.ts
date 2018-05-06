@@ -9,11 +9,14 @@ import { UIService } from '../shared/ui.service';
 import * as UI from '../shared/ui.actions';
 import * as Training from './training.actions';
 import * as fromTraining from './training.reducers';
+import * as fromAuth from './../app.reducer';
 import { Store } from '@ngrx/store';
+import { User } from '../auth/user.model';
 
 @Injectable()
 export class TrainingService {
   private fbSubs: Subscription[] = [];
+  private uid$: string;
 
   constructor(
     private db: AngularFirestore,
@@ -83,9 +86,12 @@ export class TrainingService {
   }
 
   fetchCompletedOrCancelledExercises() {
+    this.store.select(fromAuth.getCurrentUserID).subscribe(id => {
+      this.uid$ = id;
+    });
     this.fbSubs.push(
       this.db
-        .collection('finishedExercises')
+        .collection('users/' + this.uid$ + '/finishedExercises')
         .valueChanges()
         .subscribe((exercises: Exercise[]) => {
           this.store.dispatch(new Training.SetFinishedTrainings(exercises));
@@ -98,6 +104,6 @@ export class TrainingService {
   }
 
   private addDataToDatabase(exercise: Exercise) {
-    this.db.collection('finishedExercises').add(exercise);
+    this.db.collection('users/' + this.uid$ + '/finishedExercises').add(exercise);
   }
 }
